@@ -4,7 +4,7 @@ This web interface communicates with the Arduino using a websocket on port 8080.
 
 The Arduino serves as both a web server and a websocket server.
 
-The Arduino is set up as a WiFi Access Point; you need to connect to its Access Point before you try to open the web interface page.
+The Arduino is set up as a WiFi Access Point; you need to connect to its Access Point before you try to open the web interface page. A version that simply connects to your existing WiFi network can be found here: https://github.com/ocrdu/arduino-webinterface-websocket
 
 ### Libraries used:
 
