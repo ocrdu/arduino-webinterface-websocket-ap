@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Interface</title>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAABMLAAATCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZwI1BmQHML9SABmBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHYtSQ8AAAAAAAAAAGUAMrFnADT/ZAAwgQAAAAAAAAAAAAAAAHAlQBJIAAsbTwAUHwAAAAAAAAAASQAMZnAnQIFwGUHWbAo8/2wKPP9mADP/ZgAz/2wKPP9sCjz/bAo8/2wKPP9sCjz/bAo8/2wKPP8AAAAAAAAAAFUAHD1TABqHZwI0G2cANWtmADP/ZgAz/2UAMv9tCTz0ayA5sV4AKChgACwhbgk+FXIlQgMAAAAAAAAAAAAAAABkADAxZBExEIQ2XDdoBDf1ZQAy/2YAM/9lADL/bgw++3QkRhEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFcCIARgBizAZwA1/2YAM/9mADP/ZAAx/3QZRriFM14GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABoBzYIZQAy92YAM/9mADP/ZgAz/2YAM/9nATR4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAn1+AQGkGN/hlADH/ZgAz/2YAM/9mADP/ZQAyggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApmmICIc1XsBiAS//ZgAz/2YAM/9lADL/aQU3/pFGbHkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG8cQBBqDDj4ZQAy/2YAM/9mADP/ZgAz/2YDNPmBMFYXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABOABUPWwAl8GgANf9mADP/ZgAz/2gANv9ZACHARQAHBgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfjRTD3EZQvBkADH/ZgAz/2YAM/9mADPxZQAxPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAQQQ9rBzrwZQAy/2YAM/9mADP/ZgAziAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABlADEPZQAy8GQAMP9lADL/ZQAy/mQAMHcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaAA1D2kDNvl0GEbybQo88GwKPPp1GUcYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFcAHxhsCjz/iTliFm8WPyVsCjz/hzZfCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/z8vvf4/ob3gAI697B/GvPg/hDvwP9g78H8FvfA/i73gfw+94H9tPOB/pD3g/9s94P/KPeH/dD3h/2e67f8kvQ==">
+    <style>
+body {
+  background-color: #E5E5FF;
+}
+p, label {
+  font-family: Arial, sans-serif;
+}
+.connection svg {
+  vertical-align: bottom;
+}
+label {
+  font-weight: bold;
+  font-size: 1.6vw;
+}
+.controls {
+  width: 100%; height: 200px;
+  display: flex;
+  align-items: center;
+}
+.switches {
+  background-color: white;
+  width: 12%; height: 70%;
+  border: solid 1px; border-radius: 5px; margin-left: -1px; padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.3;
+}
+.onoffswitch {
+  width: 80%; height: 80%;
+}
+.switch {
+  display: none;
+}
+.switchlabel {
+  display: block;
+  height: 100%;
+  margin: 0px;
+  cursor: not-allowed;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+.switch + .switchlabel {
+background-image: url('data:image/svg+xml;utf8,%3Csvg%20version%3D%221.1%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20transform%3D%22scale%28.20074%20.20072%29%22%3E%3Cpath%20d%3D%22m255.55%2013.004c-134.01%200-242.61%20108.63-242.61%20242.61%200%20133.98%20108.6%20242.61%20242.61%20242.61%20133.98%200%20242.61-108.63%20242.61-242.61%201e-3%20-133.98-108.63-242.61-242.61-242.61zm15.164%20212.28h-30.327v-121.3h30.327zm106.14%2030.324c0%2066.934-54.404%20121.3-121.3%20121.3-66.9%200-121.3-54.366-121.3-121.3%200-50.698%2031.512-93.643%2075.814-111.71v33.528c-27.095%2015.753-45.488%2044.657-45.488%2078.18%200%2050.169%2040.811%2090.979%2090.978%2090.979%2050.171%200%2090.976-40.81%2090.976-90.979%200-33.465-18.422-62.427-45.486-78.18v-33.528c44.305%2018.066%2075.813%2061.01%2075.813%20111.71z%22%20fill-opacity%3D%22.5%22%20stroke-width%3D%220%22%2F%3E%3Crect%20x%3D%22107.04%22%20y%3D%2282.401%22%20width%3D%22292.58%22%20height%3D%22323.39%22%20fill%3D%22%23f00%22%20stroke%3D%22%23f00%22%20stroke-width%3D%221.4042%22%2F%3E%3Cpath%20d%3D%22m245.11%202.5c-134.01%200-242.61%20108.63-242.61%20242.61%200%20133.98%20108.6%20242.61%20242.61%20242.61%20133.98%200%20242.61-108.63%20242.61-242.61%201e-3%20-133.98-108.63-242.61-242.61-242.61zm15.164%20212.28h-30.327v-121.3h30.327zm106.14%2030.324c0%2066.934-54.404%20121.3-121.3%20121.3-66.9%200-121.3-54.366-121.3-121.3%200-50.698%2031.512-93.643%2075.814-111.71v33.528c-27.095%2015.753-45.488%2044.657-45.488%2078.18%200%2050.169%2040.811%2090.979%2090.978%2090.979%2050.171%200%2090.976-40.81%2090.976-90.979%200-33.465-18.422-62.427-45.486-78.18v-33.528c44.305%2018.066%2075.813%2061.01%2075.813%20111.71z%22%20fill%3D%22%233071a9%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+.switch:checked + .switchlabel {
+background-image: url('data:image/svg+xml;utf8,%3Csvg%20id%3D%22switchonimage%22%20version%3D%221.1%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20transform%3D%22matrix%28.20074%200%200%20.20072%20.50184%20.5016%29%22%3E%3Cpath%20d%3D%22m253.05%2010.505c-134.01%200-242.61%20108.63-242.61%20242.61%200%20133.98%20108.6%20242.61%20242.61%20242.61%20133.98%200%20242.61-108.63%20242.61-242.61%201e-3%20-133.98-108.63-242.61-242.61-242.61zm15.164%20212.28h-30.327v-121.3h30.327zm106.14%2030.324c0%2066.934-54.404%20121.3-121.3%20121.3-66.9%200-121.3-54.366-121.3-121.3%200-50.698%2031.512-93.643%2075.814-111.71v33.528c-27.095%2015.753-45.488%2044.657-45.488%2078.18%200%2050.169%2040.811%2090.979%2090.978%2090.979%2050.171%200%2090.976-40.81%2090.976-90.979%200-33.465-18.422-62.427-45.486-78.18v-33.528c44.305%2018.066%2075.813%2061.01%2075.813%20111.71z%22%20fill-opacity%3D%22.5%22%20stroke-width%3D%220%22%2F%3E%3Crect%20x%3D%22104.54%22%20y%3D%2279.902%22%20width%3D%22292.58%22%20height%3D%22323.39%22%20fill%3D%22%2300c832%22%20stroke%3D%22%23f00%22%20stroke-width%3D%221.4042%22%2F%3E%3Cpath%20d%3D%22m242.61%201e-3c-134.01%200-242.61%20108.63-242.61%20242.61%200%20133.98%20108.6%20242.61%20242.61%20242.61%20133.98%200%20242.61-108.63%20242.61-242.61%201e-3%20-133.98-108.63-242.61-242.61-242.61zm15.164%20212.28h-30.327v-121.3h30.327zm106.14%2030.324c0%2066.934-54.404%20121.3-121.3%20121.3-66.9%200-121.3-54.366-121.3-121.3%200-50.698%2031.512-93.643%2075.814-111.71v33.528c-27.095%2015.753-45.488%2044.657-45.488%2078.18%200%2050.169%2040.811%2090.979%2090.978%2090.979%2050.171%200%2090.976-40.81%2090.976-90.979%200-33.465-18.422-62.427-45.486-78.18v-33.528c44.305%2018.066%2075.813%2061.01%2075.813%20111.71z%22%20fill%3D%22%233071a9%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+.sliders {
+  width: 40%; height: 70%;
+  border: solid 1px; border-radius: 5px; margin-left: -1px; padding: 5px;
+  background-color: white;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.3;
+}
+.slider {
+  width: 100%; height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.volume, .cowbell {
+  cursor: not-allowed;
+}
+.slidercontrol {
+  width: 85%;
+}
+.sliderlabel {
+  width: 15%;
+}
+input[type=range] {
+  -webkit-appearance: none;
+  width: 75%; height: 20%;
+  margin: 20px 10px 20px 10px;
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  width: 100%; height: 8px;
+  border: 1px solid #010101; border-radius: 2px;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: #3071a9;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px; height: 34px;
+  border: 1px solid #000000; border-radius: 3px;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: rgba(255, 255, 255, 1);
+  margin-top: -13px;
+}
+input[type=range]::-moz-range-track {
+  width: 100%; height: 8px;
+  border: 1px solid #010101; border-radius: 2px;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: #3071a9;
+}
+input[type=range]::-moz-range-thumb {
+  width: 13px; height: 34px;
+  border: 1px solid #000000; border-radius: 3px;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: rgba(255, 255, 255, 1);
+}
+.gauges {
+  background-color: white;
+  width: 35%; height: 70%;
+  border: solid 1px; border-radius: 5px; margin-left: -1px; padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.3;
+  cursor: default;
+}
+.gauge {
+  display: block;
+  height: 100%;
+  width: 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ggauge, .tgauge {
+  height: 100%;
+}
+    </style>
+  </head>
+  <body>
+    <div id="connection" class="connection" style="height:40px;"></div>
+    <hr>
+    <div id="controls" class="controls">
+      <div id="switches" class="switches">
+        <div id="onoffswitch" class="onoffswitch">
+          <input type="checkbox" id="switch" name="switch" class="switch" disabled onChange="talk(name, checked)">
+          <label for="switch" id="switchlabel" class="switchlabel"></label>
+        </div>
+      </div>
+      <div id="sliders" class="sliders">
+        <div id="slider1" class="slider">
+          <input type="range" id="volume" name="volume" class="slidercontrol" min="0" max="100" value="0" disabled oninput="talk(name, value)">
+          <label for="volume" class="sliderlabel">Volume</label>
+        </div>
+        <div id="slider2" class="slider">
+          <input type="range" id="cowbell" name="cowbell" class="slidercontrol" min="0" max="100" value="0" disabled oninput="talk(name, value)">
+          <label for="cowbell" class="sliderlabel">Cowbell</label>
+        </div>
+      </div>
+      <div id="gauges" class="gauges" ondrop="drop(event, this)" ondragover="allowDrop(event)">
+        <div id="gauge1" class="gauge" draggable="true" ondragstart="drag(event)">
+          <svg id="ggauge" class="ggauge" width="600" height="600" version="1.1" viewBox="0 0 591 591" xmlns="http://www.w3.org/2000/svg"><g stroke="#000"><circle cx="306px" cy="304px" r="275px" opacity=".5" stroke-width="5px"/><g stroke-width="5px"><circle cx="300px" cy="300px" r="275px" fill="#3071a9"/><circle cx="300px" cy="300px" r="250px" fill="#E5E5FF"/><line x1="300" x2="300" y1="50" y2="500"/><g transform="rotate(22.5 300 300)"><line x1="300" x2="300" y1="50" y2="500"/></g><g transform="rotate(45 300 300)"><line x1="300" x2="300" y1="50" y2="550"/></g><g transform="rotate(67.5 300 300)"><line x1="300" x2="300" y1="50" y2="550"/></g><g transform="rotate(90 300 300)"><line x1="300" x2="300" y1="50" y2="550"/></g><g transform="rotate(112.5 300 300)"><line x1="300" x2="300" y1="50" y2="550"/></g><g transform="rotate(-22.5 300 300)"><line x1="300" x2="300" y1="50" y2="500"/></g><g transform="rotate(-45 300 300)"><line x1="300" x2="300" y1="50" y2="550"/></g></g></g><circle cx="300px" cy="300px" r="225px" fill="#E5E5FF" stroke-width="0px"/><g fill="#666666" font-family="sans-serif" font-size="40px" text-anchor="middle"><text x="110" y="396">0</text><text x="299" y="113">1</text><text x="494" y="396">2</text></g><rect x="192.15" y="403.89" rx="10" ry="10" width="215.69" height="72.869" fill="#fff" stroke="#000" stroke-width="1"/><g id="ggaugedial" transform="rotate(30 300 300)"><polygon id="ggaugeneedle" points="280 300 300 520 320 300" fill="#808080" stroke="#000" stroke-width="2px"/></g><circle cx="300px" cy="300px" r="25px" fill="#3071a9" stroke="#000" stroke-width="3px"/><text id="gvalue" x="300" y="458.52521" font-family="sans-serif" font-size="50px" text-anchor="middle">g</text></svg>
+        </div>
+        <div id="gauge2" class="gauge" draggable="true" ondragstart="drag(event)">
+          <svg id="tgauge" class="tgauge" width="600" height="600" version="1.1" viewBox="0 0 591 591" xmlns="http://www.w3.org/2000/svg"><g stroke="#000"><circle cx="307px" cy="304px" r="275px" opacity=".5" stroke-width="5px"/><g stroke-width="5px"><circle cx="300px" cy="300px" r="275px" fill="#3071a9"/><circle cx="300px" cy="300px" r="250px" fill="#E5E5FF"/><line x1="300" x2="300" y1="50" y2="500"/><g transform="rotate(30 300 300)"><line x1="300" x2="300" y1="50" y2="500"/></g><g transform="rotate(60 300 300)"><line x1="300" x2="300" y1="50" y2="550"/></g><g transform="rotate(90 300 300)"><line x1="300" x2="300" y1="50" y2="550"/></g><g transform="rotate(120 300 300)"><line x1="300" x2="300" y1="50" y2="550"/></g><g transform="rotate(-30 300 300)"><line x1="300" x2="300" y1="50" y2="500"/></g><g transform="rotate(-60 300 300)"><line x1="300" x2="300" y1="50" y2="550"/></g></g></g><circle cx="300px" cy="300px" r="225px" fill="#E5E5FF" stroke-width="0px"/><g fill="#666666" font-family="sans-serif" font-size="40px" text-anchor="middle"><text x="140" y="427">-40</text><text x="110" y="314">-30</text><text x="140" y="202">-20</text><text x="200" y="135">-10</text><text x="300" y="113">0</text><text x="390" y="135">10</text><text x="468" y="202">20</text><text x="499" y="314">30</text><text x="468" y="427">40</text></g><rect x="192.15" y="403.89" rx="10" ry="10" width="215.69" height="72.869" fill="#fff" stroke="#000" stroke-width="1"/><g id="tgaugedial" transform="rotate(30 300 300)"><polygon id="tgaugeneedle" points="280 300 300 520 320 300" fill="#808080" stroke="#000" stroke-width="2px"/></g><circle cx="300px" cy="300px" r="25px" fill="#3071a9" stroke="#000" stroke-width="3px"/><text id="tvalue" x="300" y="458.52521" font-family="sans-serif" font-size="50px" text-anchor="middle">&#xb0;C</text></svg>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div style="display:flex;">
+      <div style="width:45%; height:60%;">
+        <p style="font-size:1.5vw;">Responses&nbsp;from&nbsp;Arduino:</p>
+        <textarea name="servermessages" id="servermessages" class="servermessages" rows="10" cols="40" style="width:100%; margin-right:10px; " readonly></textarea>
+      </div>
+      <div style="width:45%; height:60%; margin-left:5%;">
+        <p style="font-size:1.5vw;">Websocket&nbsp;chatter:</p>
+        <textarea name="websocket" id="websocket" class="websocket" rows="10" cols="40" style="width:100%;" readonly></textarea>
+      </div>
+    </div>
+    <p style="clear:both"><hr></p>
+    <script>
+
+var server = "ws://" + window.location.hostname + ":8080/";
+var socket = null;
+var messageTime;
+var called = false;
+
+function connectSocket() {
+  document.getElementById("connection").innerHTML = '<p style="color:#FFA500;"><svg fill="none" version="1.1" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 17.435c-0.9281 0-1.68 0.7548-1.68 1.6811 0 0.9262 0.7519 1.6776 1.68 1.6776 0.9274 0 1.68-0.7514 1.68-1.6776 0-0.9263-0.7526-1.6811-1.68-1.6811zm11.744-7.9502c-2.9324-3.4845-7.2128-5.4847-11.743-5.4847-4.5306 0-8.8119 2.0002-11.744 5.4847-0.38904 0.46375-0.32785 1.1548 0.13607 1.5437 0.20274 0.1716 0.45297 0.2565 0.70228 0.2565 0.31416 0 0.62466-0.1315 0.83836-0.388 2.5151-2.9924 6.1827-4.7078 10.068-4.7078 3.8813 0 7.5516 1.7153 10.067 4.7042 0.2137 0.2601 0.5242 0.3916 0.8384 0.3916 0.2493 0 0.4995-0.0849 0.7032-0.2565 0.463-0.3889 0.5242-1.08 0.1351-1.5437zm-11.743-1.1019c-3.2356 0-6.2932 1.4259-8.3872 3.9154-0.38904 0.4638-0.33151 1.1548 0.13242 1.5437 0.20639 0.1716 0.45662 0.2565 0.70594 0.2565 0.3105 0 0.62101-0.1314 0.83836-0.3879 1.6767-1.9938 4.1206-3.1386 6.7105-3.1386 2.59 0 5.0329 1.1448 6.7096 3.1386 0.2183 0.2565 0.5279 0.3879 0.8384 0.3879 0.2502 0 0.4995-0.0812 0.7068-0.2565 0.464-0.3889 0.5242-1.0799 0.1315-1.5437-2.094-2.4894-5.1507-3.9154-8.3863-3.9154zm0 4.3828c-1.9443 0-3.7781 0.8554-5.0338 2.3498-0.38904 0.4601-0.32785 1.1512 0.13516 1.5401 0.20366 0.1752 0.45297 0.2574 0.7032 0.2574 0.31416 0 0.62375-0.1324 0.84201-0.3889 0.83471-0.9987 2.0584-1.5693 3.3534-1.5693s2.5178 0.5706 3.3525 1.5693c0.2183 0.2565 0.5288 0.3889 0.842 0.3889 0.2503 0 0.4996-0.0822 0.7032-0.2574 0.464-0.3889 0.5242-1.08 0.1352-1.5401-1.2557-1.4944-3.0886-2.3498-5.0329-2.3498z" clip-rule="evenodd" fill="#FFA500" fill-rule="evenodd"><animate attributeName="fill-opacity" attributeType="XML" dur="0.2s" repeatCount="indefinite" values="1;0"/></path></svg> Connecting ...</p>';
+
+  socket = new WebSocket(server);
+
+  socket.onopen = function() {
+    called = false;
+    document.getElementById("connection").innerHTML = '<p style="color:#00A45B;"><svg fill="none" version="1.1" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 17.435c-0.9281 0-1.68 0.7548-1.68 1.6811 0 0.9262 0.7519 1.6776 1.68 1.6776 0.9274 0 1.68-0.7514 1.68-1.6776 0-0.9263-0.7526-1.6811-1.68-1.6811zm11.744-7.9502c-2.9324-3.4845-7.2128-5.4847-11.743-5.4847-4.5306 0-8.8119 2.0002-11.744 5.4847-0.38904 0.46375-0.32785 1.1548 0.13607 1.5437 0.20274 0.1716 0.45297 0.2565 0.70228 0.2565 0.31416 0 0.62466-0.1315 0.83836-0.388 2.5151-2.9924 6.1827-4.7078 10.068-4.7078 3.8813 0 7.5516 1.7153 10.067 4.7042 0.2137 0.2601 0.5242 0.3916 0.8384 0.3916 0.2493 0 0.4995-0.0849 0.7032-0.2565 0.463-0.3889 0.5242-1.08 0.1351-1.5437zm-11.743-1.1019c-3.2356 0-6.2932 1.4259-8.3872 3.9154-0.38904 0.4638-0.33151 1.1548 0.13242 1.5437 0.20639 0.1716 0.45662 0.2565 0.70594 0.2565 0.3105 0 0.62101-0.1314 0.83836-0.3879 1.6767-1.9938 4.1206-3.1386 6.7105-3.1386 2.59 0 5.0329 1.1448 6.7096 3.1386 0.2183 0.2565 0.5279 0.3879 0.8384 0.3879 0.2502 0 0.4995-0.0812 0.7068-0.2565 0.464-0.3889 0.5242-1.0799 0.1315-1.5437-2.094-2.4894-5.1507-3.9154-8.3863-3.9154zm0 4.3828c-1.9443 0-3.7781 0.8554-5.0338 2.3498-0.38904 0.4601-0.32785 1.1512 0.13516 1.5401 0.20366 0.1752 0.45297 0.2574 0.7032 0.2574 0.31416 0 0.62375-0.1324 0.84201-0.3889 0.83471-0.9987 2.0584-1.5693 3.3534-1.5693s2.5178 0.5706 3.3525 1.5693c0.2183 0.2565 0.5288 0.3889 0.842 0.3889 0.2503 0 0.4996-0.0822 0.7032-0.2574 0.464-0.3889 0.5242-1.08 0.1352-1.5401-1.2557-1.4944-3.0886-2.3498-5.0329-2.3498z" clip-rule="evenodd" fill="#00A45B" fill-rule="evenodd"/></svg> Connected</p>';
+    document.getElementById("switch").disabled = false;
+    document.getElementById("volume").disabled = false;
+    document.getElementById("cowbell").disabled = false;
+    document.getElementById("switches").style.opacity = "1";
+    document.getElementById("sliders").style.opacity = "1";
+    document.getElementById("gauges").style.opacity = "1";
+    document.getElementById("switchlabel").style.cursor = "pointer";
+    document.getElementById("volume").style.cursor = "pointer";
+    document.getElementById("cowbell").style.cursor = "pointer";
+  }
+
+  socket.onmessage = function(m) {
+    messageTime = Date.now();
+    setTimeout(function() {
+      if (Date.now() - messageTime > 3000 && !called) {
+        called = true;
+        document.getElementById("connection").innerHTML = '<p style="color:#F75535;"><svg fill="none" version="1.1" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 17.435c-0.9281 0-1.68 0.7548-1.68 1.6811 0 0.9262 0.7519 1.6776 1.68 1.6776 0.9274 0 1.68-0.7514 1.68-1.6776 0-0.9263-0.7526-1.6811-1.68-1.6811zm11.744-7.9502c-2.9324-3.4845-7.2128-5.4847-11.743-5.4847-4.5306 0-8.8119 2.0002-11.744 5.4847-0.38904 0.46375-0.32785 1.1548 0.13607 1.5437 0.20274 0.1716 0.45297 0.2565 0.70228 0.2565 0.31416 0 0.62466-0.1315 0.83836-0.388 2.5151-2.9924 6.1827-4.7078 10.068-4.7078 3.8813 0 7.5516 1.7153 10.067 4.7042 0.2137 0.2601 0.5242 0.3916 0.8384 0.3916 0.2493 0 0.4995-0.0849 0.7032-0.2565 0.463-0.3889 0.5242-1.08 0.1351-1.5437zm-11.743-1.1019c-3.2356 0-6.2932 1.4259-8.3872 3.9154-0.38904 0.4638-0.33151 1.1548 0.13242 1.5437 0.20639 0.1716 0.45662 0.2565 0.70594 0.2565 0.3105 0 0.62101-0.1314 0.83836-0.3879 1.6767-1.9938 4.1206-3.1386 6.7105-3.1386 2.59 0 5.0329 1.1448 6.7096 3.1386 0.2183 0.2565 0.5279 0.3879 0.8384 0.3879 0.2502 0 0.4995-0.0812 0.7068-0.2565 0.464-0.3889 0.5242-1.0799 0.1315-1.5437-2.094-2.4894-5.1507-3.9154-8.3863-3.9154zm0 4.3828c-1.9443 0-3.7781 0.8554-5.0338 2.3498-0.38904 0.4601-0.32785 1.1512 0.13516 1.5401 0.20366 0.1752 0.45297 0.2574 0.7032 0.2574 0.31416 0 0.62375-0.1324 0.84201-0.3889 0.83471-0.9987 2.0584-1.5693 3.3534-1.5693s2.5178 0.5706 3.3525 1.5693c0.2183 0.2565 0.5288 0.3889 0.842 0.3889 0.2503 0 0.4996-0.0822 0.7032-0.2574 0.464-0.3889 0.5242-1.08 0.1352-1.5401-1.2557-1.4944-3.0886-2.3498-5.0329-2.3498z" clip-rule="evenodd" fill="#F75535" fill-rule="evenodd"/></svg> Disconnected</p>';
+        document.getElementById("switch").disabled = true;
+        document.getElementById("volume").disabled = true;
+        document.getElementById("cowbell").disabled = true;
+        document.getElementById("switches").style.opacity = "0.3";
+        document.getElementById("sliders").style.opacity = "0.3";
+        document.getElementById("gauges").style.opacity = "0.3";
+        document.getElementById("gvalue").innerHTML = "g";
+        document.getElementById("tvalue").innerHTML = "&#xb0;C";
+        document.getElementById("ggaugeneedle").setAttribute("fill", "#808080");
+        document.getElementById("tgaugeneedle").setAttribute("fill", "#808080");
+        document.getElementById("ggaugedial").setAttribute("transform", "rotate(30, 300, 300)");
+        document.getElementById("tgaugedial").setAttribute("transform", "rotate(30, 300, 300)");
+        document.getElementById("switchlabel").style.cursor = "not-allowed";
+        document.getElementById("volume").style.cursor = "not-allowed";
+        document.getElementById("cowbell").style.cursor = "not-allowed";
+        socket.close();
+      }
+    }, 4000);
+    document.getElementById("websocket").innerHTML += "<- " + m.data + "\n";
+    document.getElementById("websocket").scrollTop = document.getElementById("websocket").scrollHeight;
+    var sentData = m.data.split(":");
+    if (sentData[0] == "sw") {
+      document.getElementById("switch").checked = (sentData[1] == "true");
+      document.getElementById("switch").onchange();
+    } else if (sentData[0] == "volume") {
+      document.getElementById("volume").value = sentData[1];
+      document.getElementById("volume").oninput();
+    } else if (sentData[0] == "cowbell") {
+      document.getElementById("cowbell").value = sentData[1];
+      document.getElementById("cowbell").oninput();
+    } else if (sentData[0] == "gravity") {
+      var gravity = parseFloat(sentData[1]);
+      var ggaugeDialRotation = (gravity * 112.5) + 67.5;
+      if (ggaugeDialRotation >= 157.5 && ggaugeDialRotation <= 202.5) {
+        document.getElementById("ggaugeneedle").setAttribute("fill", "#32CD32");
+      } else if (ggaugeDialRotation < 45) {
+        ggaugeDialRotation = 45;
+        document.getElementById("ggaugeneedle").setAttribute("fill", "#FF0000");
+      } else if (ggaugeDialRotation > 315) {
+        ggaugeDialRotation = 315;
+        document.getElementById("ggaugeneedle").setAttribute("fill", "#FF0000");
+      } else {
+        document.getElementById("ggaugeneedle").setAttribute("fill", "#FFD700");
+      }
+      document.getElementById("ggaugedial").setAttribute("transform", "rotate(" + ggaugeDialRotation + ", 300, 300)");
+      document.getElementById("gvalue").innerHTML = gravity.toFixed(2) + "&#x202f;g";
+    } else if (sentData[0] == "temperature") {
+      var temperature = parseFloat(sentData[1]) - 7;
+      var tgaugeDialRotation = (temperature * 3) + 180;
+      if (tgaugeDialRotation < 45) {
+        tgaugeDialRotation = 45;
+      } else if (tgaugeDialRotation > 315) {
+        tgaugeDialRotation = 315;
+      }
+      if (tgaugeDialRotation >= 225 && tgaugeDialRotation <= 255) {
+        document.getElementById("tgaugeneedle").setAttribute("fill", "#32CD32");
+      } else if (tgaugeDialRotation < 225) {
+        document.getElementById("tgaugeneedle").setAttribute("fill", " #3498DB");
+      } else if (tgaugeDialRotation > 255) {
+        document.getElementById("tgaugeneedle").setAttribute("fill", "#FF0000");
+      }
+      document.getElementById("tgaugedial").setAttribute("transform", "rotate(" + tgaugeDialRotation + ", 300, 300)");
+      document.getElementById("tvalue").innerHTML = temperature.toFixed(1) + "&#x202f;&#xb0;C";
+    } else if (sentData[0] == "message") {
+      document.getElementById("servermessages").innerHTML += sentData[1] + "\n";
+      document.getElementById("servermessages").scrollTop = document.getElementById("servermessages").scrollHeight;
+    }
+  }
+
+  socket.onerror = function() {
+    socket.close();
+  }
+
+  socket.onclose = function() {
+    document.getElementById("connection").innerHTML = '<p style="color:#F75535;"><svg fill="none" version="1.1" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 17.435c-0.9281 0-1.68 0.7548-1.68 1.6811 0 0.9262 0.7519 1.6776 1.68 1.6776 0.9274 0 1.68-0.7514 1.68-1.6776 0-0.9263-0.7526-1.6811-1.68-1.6811zm11.744-7.9502c-2.9324-3.4845-7.2128-5.4847-11.743-5.4847-4.5306 0-8.8119 2.0002-11.744 5.4847-0.38904 0.46375-0.32785 1.1548 0.13607 1.5437 0.20274 0.1716 0.45297 0.2565 0.70228 0.2565 0.31416 0 0.62466-0.1315 0.83836-0.388 2.5151-2.9924 6.1827-4.7078 10.068-4.7078 3.8813 0 7.5516 1.7153 10.067 4.7042 0.2137 0.2601 0.5242 0.3916 0.8384 0.3916 0.2493 0 0.4995-0.0849 0.7032-0.2565 0.463-0.3889 0.5242-1.08 0.1351-1.5437zm-11.743-1.1019c-3.2356 0-6.2932 1.4259-8.3872 3.9154-0.38904 0.4638-0.33151 1.1548 0.13242 1.5437 0.20639 0.1716 0.45662 0.2565 0.70594 0.2565 0.3105 0 0.62101-0.1314 0.83836-0.3879 1.6767-1.9938 4.1206-3.1386 6.7105-3.1386 2.59 0 5.0329 1.1448 6.7096 3.1386 0.2183 0.2565 0.5279 0.3879 0.8384 0.3879 0.2502 0 0.4995-0.0812 0.7068-0.2565 0.464-0.3889 0.5242-1.0799 0.1315-1.5437-2.094-2.4894-5.1507-3.9154-8.3863-3.9154zm0 4.3828c-1.9443 0-3.7781 0.8554-5.0338 2.3498-0.38904 0.4601-0.32785 1.1512 0.13516 1.5401 0.20366 0.1752 0.45297 0.2574 0.7032 0.2574 0.31416 0 0.62375-0.1324 0.84201-0.3889 0.83471-0.9987 2.0584-1.5693 3.3534-1.5693s2.5178 0.5706 3.3525 1.5693c0.2183 0.2565 0.5288 0.3889 0.842 0.3889 0.2503 0 0.4996-0.0822 0.7032-0.2574 0.464-0.3889 0.5242-1.08 0.1352-1.5401-1.2557-1.4944-3.0886-2.3498-5.0329-2.3498z" clip-rule="evenodd" fill="#F75535" fill-rule="evenodd"/></svg> Disconnected</p>';
+    document.getElementById("switch").disabled = true;
+    document.getElementById("volume").disabled = true;
+    document.getElementById("cowbell").disabled = true;
+    document.getElementById("switches").style.opacity = "0.3";
+    document.getElementById("sliders").style.opacity = "0.3";
+    document.getElementById("gauges").style.opacity = "0.3";
+    document.getElementById("gvalue").innerHTML = "g";
+    document.getElementById("tvalue").innerHTML = "&#xb0;C";
+    document.getElementById("ggaugeneedle").setAttribute("fill", "#808080");
+    document.getElementById("tgaugeneedle").setAttribute("fill", "#808080");
+    document.getElementById("ggaugedial").setAttribute("transform", "rotate(30, 300, 300)");
+    document.getElementById("tgaugedial").setAttribute("transform", "rotate(30, 300, 300)");
+    document.getElementById("switchlabel").style.cursor = "not-allowed";
+    document.getElementById("volume").style.cursor = "not-allowed";
+    document.getElementById("cowbell").style.cursor = "not-allowed";
+    setTimeout(connectSocket, 1000);
+  }
+}
+
+connectSocket();
+
+window.addEventListener("beforeunload", function() {
+  socket.onclose = function() {};
+  socket.close();
+});
+
+function talk(name, value) {
+  try {
+    socket.send(name + ":" + value);
+    document.getElementById("websocket").innerHTML += "-> " + name + ":" + value + "\n";
+    document.getElementById("websocket").scrollTop = document.getElementById("websocket").scrollHeight;
+  } catch (e) {
+    socket.onerror(e);
+  }
+}
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("gauge", ev.target.id);
+}
+
+function drop(ev, el) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("gauge");
+  el.appendChild(document.getElementById(data));
+}
+    </script>
+  </body>
+</html>
