@@ -5,7 +5,7 @@
 #include <RTCZero.h>
 #include "wifi_secrets.h"
 
-#define DEBUG 1
+//#define DEBUG 1
 
 #ifdef DEBUG
   #define Sprint(a) (Serial.print(a))
