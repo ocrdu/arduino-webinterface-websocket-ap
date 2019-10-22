@@ -19,7 +19,7 @@ char ssid[] = SECRET_SSID;
 char pass[] = SECRET_PASS;
 IPAddress APIP(192, 168, 2, 1);
 int APStatus = WL_IDLE_STATUS;
-const int APChannel = 14;
+const int APChannel = 13;
 const int webPort = 80;
 const int socketPort = 8080;
 WiFiServer webServer(webPort);
