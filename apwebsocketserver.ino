@@ -5,7 +5,7 @@
 #include <RTCZero.h>
 #include "wifi_secrets.h"
 
-//#define DEBUG 1
+#define DEBUG 1
 
 #ifdef DEBUG
   #define Sprint(a) (Serial.print(a))
@@ -19,7 +19,7 @@ char ssid[] = SECRET_SSID;
 char pass[] = SECRET_PASS;
 IPAddress APIP(192, 168, 2, 1);
 int APStatus = WL_IDLE_STATUS;
-const int APChannel = 13;
+const int APChannel = 14;
 const int webPort = 80;
 const int socketPort = 8080;
 WiFiServer webServer(webPort);
@@ -69,32 +69,40 @@ void loop() {
   if (webClient.connected()) {
     Sprint("\n--New client: "); Sprint(webClient.remoteIP()); Sprint(":"); Sprintln(webClient.remotePort());
     String header = "";
+    unsigned long requestStartMillis = millis();
     while (webClient.available()) {
+      unsigned long requestCurrentMillis = millis();
       char c = webClient.read();
       if (c != '\r') {
         header += c;
       }
-      if (header.indexOf("Upgrade") > -1 && header.indexOf("ebsocket") > -1) {
-        Sprintln("--Websocket upgrade requested on webserver port");
-        webClient.println("HTTP/1.1 400 Bad Request\nContent-Type: text/plain; charset=utf-8\n\n400 Bad Request; websocket not available on this port\n");
+      if ((requestCurrentMillis - requestStartMillis) > 5000) {
+        Sprintln("--Request is taking too long");
+        webClient.println("HTTP/1.1 408 Request Timeout\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n408 Request Timeout\n");
         webClient.stop();
         Sprintln("--Client disconnected");
       }
       if (header.substring(0,1) != "G" && header.substring(0,2) != "GE" && header.substring(0,3) != "GET") {
         Sprintln("--Wrong method in header");
-        webClient.println("HTTP/1.1 405 Method Not Allowed\nAllow: GET\nContent-Type: text/plain; charset=utf-8\n\n405 Method not allowed; GET only\n");
+        webClient.println("HTTP/1.1 405 Method Not Allowed\nAllow: GET\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n405 Method not allowed; GET only\n");
+        webClient.stop();
+        Sprintln("--Client disconnected");
+      }
+      if (header.indexOf("Upgrade") > -1 && header.indexOf("ebsocket") > -1) {
+        Sprintln("--Websocket upgrade requested on webserver port");
+        webClient.println("HTTP/1.1 400 Bad Request\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n400 Bad Request; websocket not available on this port\n");
         webClient.stop();
         Sprintln("--Client disconnected");
       }
       if (header.indexOf("event-stream") > -1) {
         Sprintln("--SSE content type request in header");
-        webClient.println("HTTP/1.1 406 Not Acceptable\nContent-Type: text/plain; charset=utf-8\n\n406 Not Acceptable; SSE not available\n");
+        webClient.println("HTTP/1.1 406 Not Acceptable\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n406 Not Acceptable; SSE not available\n");
         webClient.stop();
         Sprintln("--Client disconnected");
       }
       if (header.length() > 512) {
         Sprintln("--Header too long");
-        webClient.println("HTTP/1.1 431 Request Header Fields Too Large\nContent-Type: text/plain; charset=utf-8\n\n431 Request header fields too large\n");
+        webClient.println("HTTP/1.1 431 Request Header Fields Too Large\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n431 Request header fields too large\n");
         webClient.stop();
         Sprintln("--Client disconnected");
       }
@@ -104,13 +112,13 @@ void loop() {
           sendBase64Page(interface_gz_base64, webClient, 1024);
           Sprintln("--Interface webpage sent");
         } else if (header.indexOf("GET /author HTTP") > -1) {
-          webClient.println("HTTP/1.1 200 OK\nContent-Type: text/plain; charset=utf-8\n\nOscar den Uijl, oscar@den-uijl.nl\n");
+          webClient.println("HTTP/1.1 200 OK\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\nOscar den Uijl, oscar@den-uijl.nl\n");
           Sprintln("--Email address sent");
         } else if (header.indexOf("GET /coffee HTTP") > -1) {
-          webClient.println("HTTP/1.1 418 I'm a teapot\nContent-Type: text/plain; charset=utf-8\n\n418 I'm a teapot\n");
+          webClient.println("HTTP/1.1 418 I'm a teapot\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n418 I'm a teapot\n");
           Sprintln("--Coffee request denied");
         } else {
-          webClient.println("HTTP/1.1 404 Not Found\nContent-Type: text/plain; charset=utf-8\n\n404 Not Found\n");
+          webClient.println("HTTP/1.1 404 Not Found\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n404 Not Found\n");
           Sprintln("--Page not found");
         }
         webClient.stop();
@@ -258,7 +266,7 @@ void sendBase64Page(char base64Page[], WiFiClient client, int packetSize) {
   char page[page_length];
   int done = 0;
   base64_decode(page, base64Page, base64Page_length);
-  client.println("HTTP/1.1 200 OK\nContent-Type: text/html");
+  client.println("HTTP/1.1 200 OK\nConnection: close\nContent-Type: text/html");
   if (page[0] == 0x1f && page[1] == 0x8b) {
     client.println("Content-Encoding: gzip");
   }
