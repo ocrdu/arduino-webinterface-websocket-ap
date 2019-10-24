@@ -82,7 +82,7 @@ void loop() {
         webClient.stop();
         Sprintln("--Client disconnected");
       }
-      if (header.substring(0,1) != "G" && header.substring(0,2) != "GE" && header.substring(0,3) != "GET") {
+      if (header.length() == 3 && header != "GET") {
         Sprintln("--Wrong method in header");
         webClient.println("HTTP/1.1 405 Method Not Allowed\nAllow: GET\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n405 Method not allowed; GET only\n");
         webClient.stop();
@@ -124,6 +124,12 @@ void loop() {
         webClient.stop();
         Sprintln("--Client disconnected");
       }
+    }
+    if (header.length() <= 10 || (header.length() > 10 && header.substring(header.length() - 2) != "\n\n")) {
+      Sprintln("--Incomplete header");
+      webClient.println("HTTP/1.1 400 Bad Request\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n400 Bad Request; incomplete header\n");
+      webClient.stop();
+      Sprintln("--Client disconnected");
     }
   }
 
