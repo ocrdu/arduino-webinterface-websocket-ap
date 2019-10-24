@@ -5,7 +5,7 @@
 #include <RTCZero.h>
 #include "wifi_secrets.h"
 
-#define DEBUG 1
+//#define DEBUG 1
 
 #ifdef DEBUG
   #define Sprint(a) (Serial.print(a))
@@ -79,34 +79,28 @@ void loop() {
       if ((requestCurrentMillis - requestStartMillis) > 5000) {
         Sprintln("--Request is taking too long");
         webClient.println("HTTP/1.1 408 Request Timeout\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n408 Request Timeout\n");
-        webClient.stop();
-        Sprintln("--Client disconnected");
-      }
-      if (header.length() == 3 && header != "GET") {
+        break;
+      } else if (header.length() == 3 && header != "GET") {
         Sprintln("--Wrong method in header");
         webClient.println("HTTP/1.1 405 Method Not Allowed\nAllow: GET\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n405 Method not allowed; GET only\n");
-        webClient.stop();
-        Sprintln("--Client disconnected");
-      }
-      if (header.indexOf("Upgrade") > -1 && header.indexOf("ebsocket") > -1) {
+        break;
+      } else if (header.indexOf("pgrade") > -1 && header.indexOf("ebsocket") > -1) {
         Sprintln("--Websocket upgrade requested on webserver port");
-        webClient.println("HTTP/1.1 400 Bad Request\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n400 Bad Request; websocket not available on this port\n");
-        webClient.stop();
-        Sprintln("--Client disconnected");
-      }
-      if (header.indexOf("event-stream") > -1) {
+        webClient.println("HTTP/1.1 406 Not Acceptable\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n406 Not Acceptable; websocket not available on this port\n");
+        break;
+      } else if (header.indexOf("event-stream") > -1) {
         Sprintln("--SSE content type request in header");
         webClient.println("HTTP/1.1 406 Not Acceptable\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n406 Not Acceptable; SSE not available\n");
-        webClient.stop();
-        Sprintln("--Client disconnected");
-      }
-      if (header.length() > 512) {
+        break;
+      } else if (header.length() > 512) {
         Sprintln("--Header too long");
         webClient.println("HTTP/1.1 431 Request Header Fields Too Large\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n431 Request header fields too large\n");
-        webClient.stop();
-        Sprintln("--Client disconnected");
-      }
-      if (header.substring(header.length() - 2) == "\n\n") {
+        break;
+      } else if (!webClient.available() && (header.length() <= 10 || (header.length() > 10 && header.substring(header.length() - 2) != "\n\n"))) {
+        Sprintln("--Incomplete header");
+        webClient.println("HTTP/1.1 400 Bad Request\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n400 Bad Request; incomplete header\n");
+        break;
+      } else if (header.substring(header.length() - 2) == "\n\n") {
         Sprint(header.substring(0, header.length() - 1));
         if (header.indexOf("GET / HTTP") > -1) {
           sendBase64Page(interface_gz_base64, webClient, 1024);
@@ -121,16 +115,11 @@ void loop() {
           webClient.println("HTTP/1.1 404 Not Found\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n404 Not Found\n");
           Sprintln("--Page not found");
         }
-        webClient.stop();
-        Sprintln("--Client disconnected");
-      }
+      } 
     }
-    if (header.length() <= 10 || (header.length() > 10 && header.substring(header.length() - 2) != "\n\n")) {
-      Sprintln("--Incomplete header");
-      webClient.println("HTTP/1.1 400 Bad Request\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n400 Bad Request; incomplete header\n");
-      webClient.stop();
-      Sprintln("--Client disconnected");
-    }
+    webClient.stop();
+    Sprintln("--Client disconnected");
+    return;
   }
 
   if (!socketClient.connected()) {
@@ -146,9 +135,7 @@ void loop() {
       webSocketServer.sendData("cowbell:" + (String)((1000-cowbell)/10));
       Sprintln("--Settings sent");
     } else {
-      //Sprintln("\n--Couldn't connect websocket");
       socketClient.stop();
-      delay(100);
     }
   }
 
