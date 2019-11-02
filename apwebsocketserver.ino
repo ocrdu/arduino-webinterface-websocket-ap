@@ -276,7 +276,6 @@ void sendBase64Page(char base64Page[], WiFiClient client, int packetSize) {
 #ifdef DEBUG
 void printWifiStatus() {
   Sprint("Access point SSID: "); Sprintln(WiFi.SSID());
-  Sprint("Signal strength (RSSI): "); Sprint(WiFi.RSSI()); Sprintln(" dBm");
   Sprint("IP address: "); Sprintln(WiFi.localIP());
   Sprint("Gateway: "); Sprintln(WiFi.gatewayIP());
   Sprint("Netmask: "); Sprintln(WiFi.subnetMask());
