@@ -1,8 +1,9 @@
 #include <WiFiNINA.h>
 #include <WebSocketServer.h>
 #include <Arduino_LSM6DS3.h>
-#include <Base64.h>
 #include <RTCZero.h>
+#include <Base64.h>
+#include <FlashStorage.h>
 #include "wifi_secrets.h"
 
 //#define DEBUG 1
@@ -15,11 +16,11 @@
   #define Sprintln(a)
 #endif
 
-char ssid[] = SECRET_SSID;
-char pass[] = SECRET_PASS;
-IPAddress APIP(192, 168, 2, 1);
+const char* ssid = SECRET_SSID;
+const char* pass = SECRET_PASS;
+const IPAddress APIP(192, 168, 2, 1);
 int APStatus = WL_IDLE_STATUS;
-const int APChannel = 14;
+const int APChannel = 13;
 const int webPort = 80;
 const int socketPort = 8080;
 WiFiServer webServer(webPort);
@@ -28,19 +29,32 @@ WebSocketServer webSocketServer;
 WiFiClient socketClient;
 RTCZero rtc;
 const int ledPin = 12;
+const int WiFiSwitchPin = 2;
+boolean turnWiFiOn = false;
+boolean WiFiSwitchState = HIGH;
+unsigned long debounceStart = 0;
+const int debounceDelay = 1000;
+boolean previousWiFiSwitchState = HIGH;
 boolean on = false;
 float volume = 0;
 int cowbell = 1000;
+typedef struct {
+  boolean settingsSaved_F;
+  boolean on_F;
+  float volume_F;
+  int cowbell_F;
+} Settings;
+FlashStorage(flashStore, Settings);
+Settings settings;
 float zdata[] = {1,1,1,1,1};
 int zdatasize = sizeof(zdata) / sizeof(zdata[0]);
 float tdata[] = {20,20,20,20,20,20,20,20,20,20};
 int tdatasize = sizeof(tdata) / sizeof(tdata[0]);
 int ledState = 0;
-unsigned long epoch;
 unsigned long previousCowbellMillis = 0;
 unsigned long previousGravityMillis = 0;
 unsigned long previousTemperatureMillis = 0;
-char interface_gz_base64[] = "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";
+const char* interface_gz_base64 = "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";
 
 void setup() {
   #ifdef DEBUG
@@ -49,21 +63,78 @@ void setup() {
   #endif
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(ledPin, OUTPUT);
-  rtc.begin();
+  pinMode(WiFiSwitchPin, INPUT_PULLUP);
   IMU.begin();
-  WiFiConnect();
+  rtc.begin();
+  settings = flashStore.read();
+  if (settings.settingsSaved_F) {
+    on = settings.on_F;
+    volume = settings.volume_F;
+    cowbell = settings.cowbell_F;
+  }
 }
 
 void loop() {
 
+  unsigned long currentCowbellMillis = millis();
+  if ((currentCowbellMillis - previousCowbellMillis) > cowbell) {
+    previousCowbellMillis = currentCowbellMillis;
+    if (on) {
+      if (cowbell == 1000) {
+        analogWrite(ledPin, (int)round(volume));
+      } else {
+        if (ledState == 0) {
+          ledState = 1;
+          analogWrite(ledPin, (int)round(volume));
+        } else {
+          ledState = 0;
+          analogWrite(ledPin, 0);
+        }
+      }
+    } else {
+      analogWrite(ledPin, 0);
+    }
+  }
+
+  WiFiSwitchState = digitalRead(WiFiSwitchPin);
+  if (WiFiSwitchState == LOW && previousWiFiSwitchState == HIGH && millis() - debounceStart > debounceDelay) {
+    turnWiFiOn = !turnWiFiOn;
+    debounceStart = millis();
+  }
+  previousWiFiSwitchState = WiFiSwitchState;
+
+  if ((WiFi.status() == WL_AP_CONNECTED || WiFi.status() == WL_AP_LISTENING) && !turnWiFiOn) {
+    if (socketClient.connected()) {
+      webSocketServer.disconnectStream();
+      socketClient.stop();
+    }
+    WiFi.end();
+    digitalWrite(LED_BUILTIN, LOW);
+    Sprintln("\n--Access Point switched off");
+    settings.on_F = on;
+    settings.volume_F = volume;
+    settings.cowbell_F = cowbell;
+    settings.settingsSaved_F = true;
+    flashStore.write(settings);
+    Sprintln("--Settings saved to flash");
+    return;
+  } else if (WiFi.status() != WL_AP_CONNECTED && WiFi.status() != WL_AP_LISTENING && !turnWiFiOn) {
+    return;
+  } else if (WiFi.status() != WL_AP_CONNECTED && WiFi.status() != WL_AP_LISTENING && turnWiFiOn) {
+    APSetup();    
+    return;
+  }
+
+  #ifdef DEBUG
   if (APStatus != WiFi.status()) {
     APStatus = WiFi.status();
     if (APStatus == WL_AP_CONNECTED) {
-      Sprintln("\n--A device connected to the AP");
+      Sprintln("\n--A device connected to the Access Point");
     } else {
-      Sprintln("\n--A device disconnected from the AP");
+      Sprintln("\n--A device disconnected from the Access Point");
     }  
   }
+  #endif
 
   WiFiClient webClient = webServer.available();
   if (webClient.connected()) {
@@ -145,7 +216,9 @@ void loop() {
       String name = data.substring(0, data.indexOf(":"));
       String value = data.substring(data.indexOf(":") + 1);
       boolean goodSettings = true;
-      if (name == "switch") {
+      if (name == "time") {
+        rtc.setEpoch(strtoul(value.c_str(), NULL, 10));
+      } else if (name == "switch") {
         on = (value == "true");
       } else if (name == "volume") {
         volume = (value.toFloat()*255)/100;
@@ -161,26 +234,6 @@ void loop() {
       if (goodSettings) {
         webSocketServer.sendData("message:" + name + " set to " + value);
       }
-    }
-  }
-
-  unsigned long currentCowbellMillis = millis();
-  if ((currentCowbellMillis - previousCowbellMillis) > cowbell) {
-    previousCowbellMillis = currentCowbellMillis;
-    if (on) {
-      if (cowbell == 1000) {
-        analogWrite(ledPin, (int) round(volume));
-      } else {
-        if (ledState == 0) {
-          ledState = 1;
-          analogWrite(ledPin, (int) round(volume));
-        } else {
-          ledState = 0;
-          analogWrite(ledPin, 0);
-        }
-      }
-    } else {
-      analogWrite(ledPin, 0);
     }
   }
 
@@ -206,16 +259,6 @@ void loop() {
   float x, y, z, zsum = 0;
   if (IMU.accelerationAvailable()) {
     IMU.readAcceleration(x, y, z);
-    if (x > 0.2 || x < -0.2 || y > 0.2 || y < -0.2 || z > 1.2 || z < 0.8) {
-      analogWrite(ledPin, 0);
-      Sprintln("\n--TILT!!");
-      if (on) {
-        on = false;
-        if (socketClient.connected()) {
-          webSocketServer.sendData("sw:false");
-        }
-      }
-    }
     for (int i = 0; i < zdatasize - 1; i++) {
       zdata[i] = zdata[i+1];
     }
@@ -234,14 +277,16 @@ void loop() {
 
 }
 
-void WiFiConnect() {
-  Sprintln("--Setting up access point " + (String)ssid + " ...");
+boolean APSetup() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  Sprint("\n--Setting up Access Point "); Sprint(ssid); Sprintln(" ...");
   WiFi.setHostname("nano");
   WiFi.config(APIP, APIP, APIP, IPAddress(255,255,255,0));
+  digitalWrite(LED_BUILTIN, LOW);
   APStatus = WiFi.beginAP(ssid, pass, APChannel);
   if (APStatus != WL_AP_LISTENING) {
-    Sprintln("--Setting up access point " + (String)ssid + " failed");
-    while (true);
+    Sprint("\n--Setting up Access Point "); Sprint(ssid); Sprintln(" failed");
+    return false;
   }
   webServer.begin();
   socketServer.begin();
@@ -249,11 +294,12 @@ void WiFiConnect() {
   printWifiStatus();
   #endif
   WiFi.lowPowerMode();
-  Sprintln("--Access point " + (String)ssid + " set up");
+  Sprint("--Access Point "); Sprint(ssid); Sprintln(" set up");
   digitalWrite(LED_BUILTIN, HIGH);
+  return true;
 }
 
-void sendBase64Page(char base64Page[], WiFiClient client, int packetSize) {
+void sendBase64Page(const char* base64Page, WiFiClient client, int packetSize) {
   const int base64Page_length = strlen(base64Page);
   const int page_length = base64_dec_len(base64Page, base64Page_length);
   char page[page_length];
@@ -279,7 +325,7 @@ void printWifiStatus() {
   Sprint("IP address: "); Sprintln(WiFi.localIP());
   Sprint("Gateway: "); Sprintln(WiFi.gatewayIP());
   Sprint("Netmask: "); Sprintln(WiFi.subnetMask());
-  Sprint("Webserver is at http://"); Sprint(WiFi.localIP()); Sprintln(":" + (String)webPort + "/");
-  Sprint("Websocket is at http://"); Sprint(WiFi.localIP()); Sprintln(":" + (String)socketPort + "/");
+  Sprint("Webserver is at http://"); Sprint(WiFi.localIP()); Sprint(":"); Sprint(webPort); Sprintln("/");
+  Sprint("Websocket is at http://"); Sprint(WiFi.localIP()); Sprint(":"); Sprint(socketPort); Sprintln("/");
 }
 #endif

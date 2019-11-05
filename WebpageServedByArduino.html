@@ -197,6 +197,7 @@ function connectSocket() {
     document.getElementById("switchlabel").style.cursor = "pointer";
     document.getElementById("volume").style.cursor = "pointer";
     document.getElementById("cowbell").style.cursor = "pointer";
+    talk("time", Math.round(Date.now() / 1000));
   }
 
   socket.onmessage = function(m) {
