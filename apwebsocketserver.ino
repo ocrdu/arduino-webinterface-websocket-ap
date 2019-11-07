@@ -172,6 +172,7 @@ void loop() {
         webClient.println("HTTP/1.1 400 Bad Request\nConnection: close\nContent-Type: text/plain; charset=utf-8\n\n400 Bad Request; incomplete header\n");
         break;
       } else if (header.substring(header.length() - 2) == "\n\n") {
+        Sprintln("--Received request header:");
         Sprint(header.substring(0, header.length() - 1));
         if (header.indexOf("GET / HTTP") > -1) {
           sendBase64Page(interface_gz_base64, webClient, 1024);
@@ -299,11 +300,11 @@ boolean APSetup() {
   return true;
 }
 
-void sendBase64Page(const char* base64Page, WiFiClient client, int packetSize) {
-  const int base64Page_length = strlen(base64Page);
-  const int page_length = base64_dec_len(base64Page, base64Page_length);
+unsigned int sendBase64Page(const char* base64Page, WiFiClient client, int packetSize) {
+  const unsigned int base64Page_length = strlen(base64Page);
+  const unsigned int page_length = base64_dec_len(base64Page, base64Page_length);
   char page[page_length];
-  int done = 0;
+  unsigned int done = 0;
   base64_decode(page, base64Page, base64Page_length);
   client.println("HTTP/1.1 200 OK\nConnection: close\nContent-Type: text/html");
   if (page[0] == 0x1f && page[1] == 0x8b) {
@@ -317,6 +318,8 @@ void sendBase64Page(const char* base64Page, WiFiClient client, int packetSize) {
     client.write(page + done, packetSize * sizeof(char));
     done = done + packetSize;
   }
+  Sprint("--Sent "); Sprint(done); Sprintln(" bytes");
+  return done;
 }
 
 #ifdef DEBUG
