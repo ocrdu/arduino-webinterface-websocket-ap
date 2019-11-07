@@ -97,7 +97,7 @@ void loop() {
   }
 
   WiFiSwitchState = digitalRead(WiFiSwitchPin);
-  if (WiFiSwitchState == LOW && previousWiFiSwitchState == HIGH && millis() - debounceStart > debounceDelay) {
+  if (WiFiSwitchState == LOW && previousWiFiSwitchState == HIGH && (millis() - debounceStart) > debounceDelay) {
     turnWiFiOn = !turnWiFiOn;
     debounceStart = millis();
   }
