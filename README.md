@@ -8,11 +8,12 @@ The Arduino is set up as a WiFi Access Point; you need to connect to its Access 
 
 ### Features:
 - The interface webpage is included in the code as a base64-encoded, gzipped HTML page, and can be served by the Arduino;
-- The Access Point (and WiFi) can be toggled on and off by pulling pin 2 low for a short while with a push button (or a bit of wire, or a reed switch);
+- The Access Point (and WiFi) can be toggled on and off by pulling pin 2 low for a short while with a push button (or a bit of wire, or a reed switch and a magnet, or whatever you like);
 - The Access Point (and WiFi) will be switched off when there has been no connection to the Access Point for more than 5 minutes;
 - Settings are saved to flash when you turn WiFi off (or when WiFi switches itself off), and will survive a reset or power down;
-- Part of the code in the loop() will always run (in the example, the bit that dims and flashes a LED), and another part will run only when the Access Point is up;
-- The RTC on the Arduino is set to the correct time and date when you open the webpage interface.
+- The interface webpage will automatically disconnect from, and try to reconnect to, the Arduino's websocket when it hasn't received data from the Arduino for more than 3 seconds;
+- A part of the code in the loop() will always run (in the example, the bit that dims and flashes a LED), and another part will run only when the Access Point is up;
+- The Real Time Clock on the Arduino is set to the correct time and date when you open the webpage interface.
 
 ### Libraries used:
 
