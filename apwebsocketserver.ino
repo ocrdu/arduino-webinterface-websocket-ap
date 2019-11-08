@@ -129,12 +129,11 @@ void loop() {
     return;
   }
 
-  if (APStatus != WiFi.status()) {
-    APStatus = WiFi.status();
-    if (APStatus != WL_AP_CONNECTED) {
-      APIdleStartMillis = millis();
-    }
-  } else if (APStatus != WL_AP_CONNECTED && (millis() - APIdleStartMillis) > APTimeOut){
+  if (APStatus != WiFi.status() && WiFi.status() != WL_AP_CONNECTED) {
+    APIdleStartMillis = millis();
+  }
+  APStatus = WiFi.status();
+  if (APStatus != WL_AP_CONNECTED && (millis() - APIdleStartMillis) > APTimeOut){
     Sprint("\n--Access Point time out: no connection for "); Sprint(APTimeOut/60000); Sprintln(" minutes");
     turnWiFiOn = false;
     return;
