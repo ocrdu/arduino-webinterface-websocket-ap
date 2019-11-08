@@ -20,7 +20,15 @@ const char* ssid = SECRET_SSID;
 const char* pass = SECRET_PASS;
 const IPAddress APIP(192, 168, 2, 1);
 int APStatus = WL_IDLE_STATUS;
+long int APIdleStartMillis = 0;
+const int APTimeOut = 300000;
 const int APChannel = 13;
+const int WiFiSwitchPin = 2;
+boolean turnWiFiOn = false;
+boolean WiFiSwitchState = HIGH;
+unsigned long debounceStart = 0;
+const int debounceDelay = 1000;
+boolean previousWiFiSwitchState = HIGH;
 const int webPort = 80;
 const int socketPort = 8080;
 WiFiServer webServer(webPort);
@@ -29,12 +37,6 @@ WebSocketServer webSocketServer;
 WiFiClient socketClient;
 RTCZero rtc;
 const int ledPin = 12;
-const int WiFiSwitchPin = 2;
-boolean turnWiFiOn = false;
-boolean WiFiSwitchState = HIGH;
-unsigned long debounceStart = 0;
-const int debounceDelay = 1000;
-boolean previousWiFiSwitchState = HIGH;
 boolean on = false;
 float volume = 0;
 int cowbell = 1000;
@@ -61,6 +63,7 @@ void setup() {
   Serial.begin(115200);
   while (!Serial);
   #endif
+  Sprintln("--Webinterface (Access Point version) started");
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(ledPin, OUTPUT);
   pinMode(WiFiSwitchPin, INPUT_PULLUP);
@@ -121,20 +124,21 @@ void loop() {
   } else if (WiFi.status() != WL_AP_CONNECTED && WiFi.status() != WL_AP_LISTENING && !turnWiFiOn) {
     return;
   } else if (WiFi.status() != WL_AP_CONNECTED && WiFi.status() != WL_AP_LISTENING && turnWiFiOn) {
-    APSetup();    
+    APSetup();
+    APIdleStartMillis = millis();
     return;
   }
 
-  #ifdef DEBUG
   if (APStatus != WiFi.status()) {
     APStatus = WiFi.status();
-    if (APStatus == WL_AP_CONNECTED) {
-      Sprintln("\n--A device connected to the Access Point");
-    } else {
-      Sprintln("\n--A device disconnected from the Access Point");
-    }  
+    if (APStatus != WL_AP_CONNECTED) {
+      APIdleStartMillis = millis();
+    }
+  } else if (APStatus != WL_AP_CONNECTED && (millis() - APIdleStartMillis) > APTimeOut){
+    Sprint("\n--Access Point time out: no connection for "); Sprint(APTimeOut/60000); Sprintln(" minutes");
+    turnWiFiOn = false;
+    return;
   }
-  #endif
 
   WiFiClient webClient = webServer.available();
   if (webClient.connected()) {
