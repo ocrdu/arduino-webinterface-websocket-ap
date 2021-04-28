@@ -19,6 +19,7 @@ The Arduino is set up as a WiFi Access Point; you need to connect to its Access 
 
 - https://github.com/ocrdu/WiFiNINA for WiFi connection and servers (**Don't** use https://github.com/arduino-libraries/WiFiNINA for this sketch)
 - https://github.com/ocrdu/NINA-Websocket as the websocket library (Minor change from https://github.com/morrissinger/ESP8266-Websocket);
+- https://github.com/ocrdu/Arduino_SAMD21_turbo_PWM for blinking the WiFi status LED;
 - https://github.com/ocrdu/Arduino_LSM6DS3_T as the LSM6DS3 (IMU) library (Adds code for LSM6DS3 internal temperature sensor to https://github.com/arduino-libraries/Arduino_LSM6DS3);
 - https://github.com/ocrdu/arduino-base64 for base64 decoding (changed from https://github.com/adamvr/arduino-base64 to accept const char*);
 - https://github.com/arduino-libraries/RTCZero as the Real Time Clock library;
